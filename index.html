@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+        th {
+            background-color: lightblue;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Employee Information</h2>
+
+<table id="empTable">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Designation</th>
+        <th>Salary</th>
+    </tr>
+</table>
+
+<script>
+fetch("employees.xml")
+    .then(response => response.text())
+    .then(data => {
+        let xml = new DOMParser()
+            .parseFromString(data, "text/xml");
+
+        let employees = xml.getElementsByTagName("employee");
+        let table = document.getElementById("empTable");
+
+        for (let emp of employees) {
+            let row = table.insertRow();
+
+            ["id", "name", "department",
+             "designation", "salary"].forEach(tag => {
+                let cell = row.insertCell();
+                cell.textContent =
+                    emp.getElementsByTagName(tag)[0].textContent;
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
