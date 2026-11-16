@@ -1,63 +1,151 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Information</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px 20px;
             text-align: center;
         }
+
+        h1 {
+            color: #243b55;
+            margin-bottom: 30px;
+        }
+
         table {
+            width: 90%;
+            margin: auto;
             border-collapse: collapse;
-            width: 80%;
-            margin: 20px auto;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+
         th, td {
-            border: 1px solid black;
-            padding: 10px;
+            border: 1px solid #ddd;
+            padding: 14px;
+            text-align: center;
         }
+
         th {
-            background-color: lightblue;
+            background-color: #2874a6;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #eef5fa;
+        }
+
+        tr:hover {
+            background-color: #d6eaf8;
+        }
+
+        #message {
+            margin-top: 20px;
+            color: red;
         }
     </style>
 </head>
+
 <body>
 
-<h2>Employee Information</h2>
+    <h1>Employee Information</h1>
 
-<table id="empTable">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Department</th>
-        <th>Designation</th>
-        <th>Salary</th>
-    </tr>
-</table>
+    <table id="employeeTable">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Designation</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+        <tbody id="employeeBody">
+        </tbody>
+    </table>
 
-<script>
-fetch("employees.xml")
-    .then(response => response.text())
-    .then(data => {
-        let xml = new DOMParser()
-            .parseFromString(data, "text/xml");
+    <p id="message"></p>
 
-        let employees = xml.getElementsByTagName("employee");
-        let table = document.getElementById("empTable");
-
-        for (let emp of employees) {
-            let row = table.insertRow();
-
-            ["id", "name", "department",
-             "designation", "salary"].forEach(tag => {
-                let cell = row.insertCell();
-                cell.textContent =
-                    emp.getElementsByTagName(tag)[0].textContent;
-            });
+    <script>
+        function getValue(employee, tag) {
+            const element = employee.getElementsByTagName(tag)[0];
+            return element ? element.textContent : "";
         }
-    });
-</script>
+
+        async function loadEmployees() {
+            const message = document.getElementById("message");
+            const tableBody = document.getElementById("employeeBody");
+
+            try {
+                const response = await fetch("./employees.xml");
+
+                if (!response.ok) {
+                    throw new Error("Unable to load employees.xml");
+                }
+
+                const xmlText = await response.text();
+
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(
+                    xmlText,
+                    "application/xml"
+                );
+
+                const parserError =
+                    xmlDoc.querySelector("parsererror");
+
+                if (parserError) {
+                    throw new Error("Invalid XML format");
+                }
+
+                const employees =
+                    xmlDoc.getElementsByTagName("employee");
+
+                tableBody.innerHTML = "";
+
+                for (let i = 0; i < employees.length; i++) {
+                    const employee = employees[i];
+                    const row = document.createElement("tr");
+
+                    const fields = [
+                        "id",
+                        "name",
+                        "department",
+                        "designation",
+                        "salary"
+                    ];
+
+                    fields.forEach(field => {
+                        const cell = document.createElement("td");
+                        cell.textContent = getValue(employee, field);
+                        row.appendChild(cell);
+                    });
+
+                    tableBody.appendChild(row);
+                }
+
+                if (employees.length === 0) {
+                    message.textContent = "No employee records found.";
+                } else {
+                    message.textContent = "";
+                }
+
+            } catch (error) {
+                message.textContent = error.message;
+                console.error("Error:", error);
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", loadEmployees);
+    </script>
 
 </body>
 </html>

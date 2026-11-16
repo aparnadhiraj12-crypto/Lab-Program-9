@@ -1,25 +1,42 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <employees>
     <employee>
         <id>101</id>
-        <name>Rahul</name>
+        <name>Rahul Sharma</name>
         <department>IT</department>
-        <designation>Developer</designation>
+        <designation>Software Developer</designation>
         <salary>50000</salary>
     </employee>
+
     <employee>
         <id>102</id>
-        <name>Priya</name>
+        <name>Priya Nair</name>
         <department>HR</department>
-        <designation>Manager</designation>
+        <designation>HR Manager</designation>
         <salary>60000</salary>
     </employee>
+
     <employee>
         <id>103</id>
-        <name>Amit</name>
+        <name>Amit Kumar</name>
         <department>Finance</department>
         <designation>Accountant</designation>
         <salary>45000</salary>
+    </employee>
+
+    <employee>
+        <id>104</id>
+        <name>Neha Singh</name>
+        <department>Marketing</department>
+        <designation>Marketing Executive</designation>
+        <salary>48000</salary>
+    </employee>
+
+    <employee>
+        <id>105</id>
+        <name>Arjun Menon</name>
+        <department>IT</department>
+        <designation>System Analyst</designation>
+        <salary>55000</salary>
     </employee>
 </employees>
